@@ -21,6 +21,10 @@ loadEnvFile();
 const HOST = process.env.HOST || "127.0.0.1";
 const PORT = Number(process.env.PORT || 3000);
 const NODE_ENV = process.env.NODE_ENV || "development";
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "http://127.0.0.1:3000,http://localhost:3000,https://agarwalgatiwaypackers.com,https://www.agarwalgatiwaypackers.com")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
 
 let transporter;
 
@@ -97,11 +101,27 @@ function getTransporter() {
     return transporter;
 }
 
-function sendJson(response, statusCode, payload) {
+function sendJson(response, statusCode, payload, extraHeaders = {}) {
     response.writeHead(statusCode, {
-        "Content-Type": "application/json; charset=utf-8"
+        "Content-Type": "application/json; charset=utf-8",
+        ...extraHeaders
     });
     response.end(JSON.stringify(payload));
+}
+
+function getCorsHeaders(request) {
+    const origin = request.headers.origin;
+    const headers = {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+        "Vary": "Origin"
+    };
+
+    if (origin && ALLOWED_ORIGINS.includes(origin)) {
+        headers["Access-Control-Allow-Origin"] = origin;
+    }
+
+    return headers;
 }
 
 function logRequest(method, requestUrl, statusCode) {
@@ -250,7 +270,7 @@ async function handleEnquiry(request, response) {
         });
 
         logRequest(request.method || "POST", request.url || "/api/enquiry", 200);
-        sendJson(response, 200, { message: "Enquiry sent successfully." });
+        sendJson(response, 200, { message: "Enquiry sent successfully." }, getCorsHeaders(request));
     } catch (error) {
         const statusCode = error.message === "Invalid request payload." || error.message === "Please fill all required fields before sending your enquiry." || error.message === "Enter a valid 10 digit phone number."
             ? 400
@@ -259,7 +279,7 @@ async function handleEnquiry(request, response) {
         logRequest(request.method || "POST", request.url || "/api/enquiry", statusCode);
         sendJson(response, statusCode, {
             message: error.message || "Unable to send the enquiry right now."
-        });
+        }, getCorsHeaders(request));
     }
 }
 
@@ -272,7 +292,13 @@ const server = http.createServer((request, response) => {
 
     if (request.method === "GET" && request.url === "/api/health") {
         logRequest(request.method, request.url, 200);
-        sendJson(response, 200, { status: "ok" });
+        sendJson(response, 200, { status: "ok" }, getCorsHeaders(request));
+        return;
+    }
+
+    if (request.method === "OPTIONS" && request.url.startsWith("/api/")) {
+        response.writeHead(204, getCorsHeaders(request));
+        response.end();
         return;
     }
 

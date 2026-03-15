@@ -64,6 +64,7 @@ const chennaiAreas = [
     "Iyyappanthangal"
 ];
 
+const API_BASE_URL = document.querySelector('meta[name="api-base-url"]')?.content.trim() || "";
 const ENQUIRY_ENDPOINT = "/api/enquiry";
 
 const menuToggle = document.getElementById("menu-toggle");
@@ -204,13 +205,28 @@ async function sendEnquiry(data) {
         throw new Error("Run `npm run dev` or `npm start` and open http://127.0.0.1:3000 instead of the file directly.");
     }
 
-    const response = await fetch(ENQUIRY_ENDPOINT, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    });
+    const isLocalHost = ["127.0.0.1", "localhost"].includes(window.location.hostname);
+    const requestUrl = API_BASE_URL
+        ? `${API_BASE_URL.replace(/\/$/, "")}${ENQUIRY_ENDPOINT}`
+        : ENQUIRY_ENDPOINT;
+
+    let response;
+
+    try {
+        response = await fetch(requestUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+    } catch (error) {
+        if (!isLocalHost) {
+            throw new Error("Unable to reach the production form backend. Check your deployed API URL and CORS settings.");
+        }
+
+        throw error;
+    }
 
     let payload = {};
 
@@ -221,6 +237,10 @@ async function sendEnquiry(data) {
     }
 
     if (!response.ok) {
+        if (!isLocalHost && !API_BASE_URL && response.status === 404) {
+            throw new Error("Production form backend is not connected. Add your Render or Vercel backend URL in the api-base-url meta tag.");
+        }
+
         throw new Error(payload.message || "Unable to send the enquiry right now.");
     }
 }
