@@ -1,6 +1,13 @@
 # Agarwalgatiwaypackers
 
-Chennai-focused landing page for Agarwalgatiwaypackers with a Nodemailer enquiry form backend.
+Next.js + TypeScript + Tailwind CSS landing page for Agarwal Gatiway Packers and Movers, focused on Chennai SEO and lead generation.
+
+## Stack
+
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- Nodemailer
 
 ## Development
 
@@ -12,37 +19,46 @@ Chennai-focused landing page for Agarwalgatiwaypackers with a Nodemailer enquiry
 4. Start the development server:
    `npm run dev`
 5. Open:
-   `http://127.0.0.1:3000`
+   `http://localhost:3000`
 
 ## Available Scripts
 
 - `npm run dev`
-  Starts the local server in watch mode for backend and `.env` changes.
+  Starts the Next.js development server.
+- `npm run build`
+  Builds the production app.
 - `npm start`
-  Starts the local server once.
+  Starts the production server after build.
 - `npm run check`
-  Runs syntax checks for `server.js` and `main.js`.
+  Runs the TypeScript type check.
 
-## Project Structure
+## Important Files
 
-- `index.html`
-  Landing page markup and Tailwind-based design.
-- `main.js`
-  Frontend interactions and form submission logic.
-- `server.js`
-  Static file server and `/api/enquiry` Nodemailer endpoint.
+- `app/page.tsx`
+  Main Chennai landing page.
+- `components/enquiry-form.tsx`
+  Client-side enquiry form with validation.
+- `app/api/enquiry/route.ts`
+  Nodemailer-powered API route for form submissions.
+- `lib/site-content.ts`
+  Reusable SEO content, locality lists and section data.
 - `.env.example`
-  Example mail and server configuration.
+  Environment variable template.
 
-## Notes
+## Environment Variables
 
-- Do not open `index.html` directly with `file://`; the enquiry form requires the local server.
-- Keep `.env` private. It is ignored by git.
-- Static file changes in `index.html` and `main.js` do not need a server restart; refresh the browser.
+- `NEXT_PUBLIC_SITE_URL`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_SECURE`
+- `SMTP_USER`
+- `SMTP_PASS`
+- `MAIL_TO`
+- `MAIL_FROM`
+- `ALLOWED_ORIGINS`
 
 ## Vercel
 
-- This project now includes Vercel serverless routes at `api/enquiry.js` and `api/health.js`.
-- On Vercel, set these environment variables:
-  `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `MAIL_TO`, `MAIL_FROM`, `ALLOWED_ORIGINS`
-- For same-domain Vercel deployment, you can keep the `api-base-url` meta tag empty because the frontend will use `/api/enquiry`.
+- Deploy the same project to Vercel.
+- Add the environment variables from `.env.example` in the Vercel dashboard.
+- The site and the API route will work on the same domain, so the form can post to `/api/enquiry`.
