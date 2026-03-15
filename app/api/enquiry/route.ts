@@ -10,13 +10,10 @@ function buildCorsHeaders(request: NextRequest) {
         "Access-Control-Allow-Methods": "POST,OPTIONS",
         Vary: "Origin"
     });
-
     const origin = request.headers.get("origin");
-
     if (origin && getAllowedOrigins().includes(origin)) {
         headers.set("Access-Control-Allow-Origin", origin);
     }
-
     return headers;
 }
 
@@ -29,7 +26,6 @@ export async function OPTIONS(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     const headers = buildCorsHeaders(request);
-
     try {
         const payload = (await request.json()) as Record<string, string>;
         validateEnquiry(payload);
