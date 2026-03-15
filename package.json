@@ -1,0 +1,15 @@
+{
+    "name": "agarwalgatiwaypackers",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Landing page and Nodemailer enquiry server for Agarwalgatiwaypackers Chennai.",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "node --watch-path=server.js --watch-path=.env server.js",
+        "check": "node --check server.js && node --check main.js"
+    },
+    "dependencies": {
+        "nodemailer": "^6.10.0"
+    }
+}

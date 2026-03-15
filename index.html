@@ -509,7 +509,7 @@
                         <article class="rounded-[1.9rem] border border-white/10 bg-white/5 p-6" data-reveal>
                             <p class="text-sm font-semibold uppercase tracking-[0.24em] text-brand-yellow">04</p>
                             <h3 class="mt-4 font-display text-2xl font-bold">Ready for lead emails</h3>
-                            <p class="mt-3 text-base leading-7 text-white/75">The enquiry form is wired for SMTP-based email sending once your recipient email and token or SMTP credentials are added.</p>
+                            <p class="mt-3 text-base leading-7 text-white/75">The enquiry form now sends through a Nodemailer backend, so the SMTP account stays on the server instead of inside browser code.</p>
                         </article>
                     </div>
                 </div>
@@ -638,7 +638,7 @@
                         </svg>
                     </summary>
                     <p class="mt-4 text-base leading-8 text-brand-ink/70">
-                        The form is already connected to client-side SMTP sending logic. You only need to add your recipient email and either an SMTPJS secure token or SMTP host credentials in <code>main.js</code> before going live.
+                        The form is connected to a backend Nodemailer endpoint. Configure the SMTP values in <code>.env</code> and run the local server before going live.
                     </p>
                 </details>
             </div>
@@ -686,7 +686,6 @@
 
     <datalist id="chennai-areas"></datalist>
 
-    <script src="https://smtpjs.com/v3/smtp.js"></script>
     <script src="./main.js"></script>
 </body>
 </html>
