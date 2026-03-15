@@ -101,7 +101,7 @@ function renderChennaiAreas() {
     }
 
     areaCount.textContent = `${chennaiAreas.length}+ areas`;
-    areaSummary.textContent = `Coverage includes ${chennaiAreas.slice(0, 12).join(", ")} and many more Chennai neighborhoods.`;
+    areaSummary.textContent = `Agarwalgatiwaypackers supports packers and movers in Chennai, household shifting services in Chennai and bike transportation services across ${chennaiAreas.slice(0, 12).join(", ")} and many more localities.`;
 
     chennaiAreas.forEach((area) => {
         const tag = document.createElement("span");
