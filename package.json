@@ -7,7 +7,7 @@
     "scripts": {
         "start": "node server.js",
         "dev": "node --watch-path=server.js --watch-path=.env server.js",
-        "check": "node --check server.js && node --check main.js"
+        "check": "node --check server.js && node --check main.js && node --check api/enquiry.js && node --check api/health.js"
     },
     "dependencies": {
         "nodemailer": "^6.10.0"

@@ -238,7 +238,7 @@ async function sendEnquiry(data) {
 
     if (!response.ok) {
         if (!isLocalHost && !API_BASE_URL && response.status === 404) {
-            throw new Error("Production form backend is not connected. Add your Render or Vercel backend URL in the api-base-url meta tag.");
+            throw new Error("The production API route is not deployed yet. Redeploy the site on Vercel so /api/enquiry becomes available, or set api-base-url to your separate backend.");
         }
 
         throw new Error(payload.message || "Unable to send the enquiry right now.");

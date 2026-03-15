@@ -39,3 +39,10 @@ Chennai-focused landing page for Agarwalgatiwaypackers with a Nodemailer enquiry
 - Do not open `index.html` directly with `file://`; the enquiry form requires the local server.
 - Keep `.env` private. It is ignored by git.
 - Static file changes in `index.html` and `main.js` do not need a server restart; refresh the browser.
+
+## Vercel
+
+- This project now includes Vercel serverless routes at `api/enquiry.js` and `api/health.js`.
+- On Vercel, set these environment variables:
+  `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `MAIL_TO`, `MAIL_FROM`, `ALLOWED_ORIGINS`
+- For same-domain Vercel deployment, you can keep the `api-base-url` meta tag empty because the frontend will use `/api/enquiry`.
