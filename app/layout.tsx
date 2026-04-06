@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope, Sora } from "next/font/google";
+import Script from "next/script";
 import type { ReactNode } from "react";
 
 import { RevealInit } from "@/components/reveal-init";
@@ -70,6 +71,19 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <body className={`${manrope.variable} ${sora.variable} bg-[#fff8ef] font-sans text-[#201815] antialiased`}>
+                <Script
+                    async
+                    src="https://www.googletagmanager.com/gtag/js?id=AW-18063799766"
+                    strategy="afterInteractive"
+                />
+                <Script id="google-ads-gtag" strategy="afterInteractive">
+                    {`
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'AW-18063799766');
+                    `}
+                </Script>
                 <RevealInit />
                 {children}
             </body>
