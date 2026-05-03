@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { ChennaiKeywordsSection } from "@/components/chennai-keywords-section";
 import { EnquiryForm } from "@/components/enquiry-form";
 import { SiteHeader } from "@/components/site-header";
 import {
@@ -24,7 +25,7 @@ const movingCompanyJsonLd = {
   "@type": "MovingCompany",
   name: "Agarwal Gatiway Packers and Movers",
   description:
-    "Packers and movers in Chennai offering household shifting services, bike transportation services, packing and relocation support.",
+    "Packers and movers in Chennai offering household shifting services, bike transportation services, Car Transportation services, Car Carrier Services, packing and relocation support.",
   telephone: "+91-9991973464",
   areaServed: {
     "@type": "City",
@@ -34,6 +35,8 @@ const movingCompanyJsonLd = {
     "Packers and Movers",
     "Household Shifting Services",
     "Bike Transportation Services",
+    "Car Transportation Services",
+    "Car Carrier Services",
     "Loading and Unloading",
     "Local and Intercity Relocation",
   ],
@@ -42,18 +45,18 @@ const movingCompanyJsonLd = {
 
 const topTrustCards = [
   {
-    title: "Responsive contact flow",
+    title: "Quick move discussion",
     description:
-      "The page keeps phone, WhatsApp and form actions visible so mobile visitors can contact you in one tap.",
+      "Phone, WhatsApp and enquiry form options make it easy to share route, goods volume, vehicle details and timing.",
   },
   {
-    title: "Service-led structure",
+    title: "Combined relocation support",
     description:
-      "Household shifting services and bike transportation services are highlighted early because those are high-intent searches.",
+      "Household shifting, bike transportation, car carrier services, packing and loading can be discussed together.",
   },
 ] as const;
 
-const locationSummary = `Agarwal Gatiway Packers and Movers supports packers and movers in Chennai, household shifting services in Chennai and bike transportation services across ${chennaiAreas
+const locationSummary = `Agarwal Gatiway Packers and Movers supports packers and movers in Chennai, household shifting services in Chennai, bike transportation services, Car Transportation services and Car Carrier Services across ${chennaiAreas
   .slice(0, 12)
   .join(", ")} and many more localities.`;
 
@@ -76,7 +79,7 @@ export default function HomePage() {
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <span className="rounded-full bg-white/12 px-4 py-2 font-medium">
-              Household shifting and bike transport
+                  Household shifting, bike and car transport
             </span>
             <a
               href={phoneHref}
@@ -105,16 +108,17 @@ export default function HomePage() {
 
                 <h1 className="mt-6 max-w-4xl font-display text-4xl font-extrabold leading-tight text-[#201815] sm:text-5xl lg:text-6xl">
                   Agarwal Packers And Movers in Chennai for safe household
-                  shifting and bike transportation services.
+                  shifting, bike transportation and car carrier services.
                 </h1>
 
                 <p className="mt-6 max-w-2xl text-lg leading-8 text-[#201815]/75">
                   Agarwal Gatiway helps families, tenants and businesses move
                   across Chennai with careful packing, organized loading,
-                  on-time pickup and responsive support. If someone searches for
-                  packers and movers in Chennai, household shifting services or
-                  bike transportation services, this page is built to answer
-                  that need clearly.
+                  on-time pickup and responsive support. If you need packers
+                  and movers in Chennai, household shifting services, bike
+                  transportation services, Car Transportation services or Car
+                  Carrier Services, the team can discuss the move details
+                  clearly.
                 </p>
 
                 <div className="mt-8 flex flex-wrap gap-4">
@@ -169,15 +173,17 @@ export default function HomePage() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#db200e]">
-                      Popular Chennai search intent
+                      Popular Chennai services
                     </p>
                     <p className="mt-2 text-base leading-7 text-[#201815]/75">
-                      This landing page targets searches for{" "}
+                      Customers can contact us for{" "}
                       <strong>Agarwal Packers And Movers Chennai</strong>,{" "}
                       <strong>packers and movers Chennai</strong>,{" "}
-                      <strong>household shifting services</strong> and{" "}
-                      <strong>bike transportation services</strong> with
-                      location-specific content for Chennai neighborhoods.
+                      <strong>household shifting services</strong>,{" "}
+                      <strong>bike transportation services</strong>,{" "}
+                      <strong>Car Transportation services</strong> and{" "}
+                      <strong>Car Carrier Services</strong> across Chennai
+                      neighborhoods and intercity routes.
                     </p>
                   </div>
                 </div>
@@ -233,8 +239,9 @@ export default function HomePage() {
             >
               The page is focused on the services people typically look for
               first: packers and movers, household shifting services and bike
-              transportation services from Chennai localities to city or
-              outstation destinations.
+              transportation services, Car Transportation services and Car
+              Carrier Services from Chennai localities to city or outstation
+              destinations.
             </p>
           </div>
 
@@ -264,20 +271,18 @@ export default function HomePage() {
         <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
           <div className="max-w-4xl" data-reveal>
             <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#db200e]">
-              Detailed Chennai Content
+              Moving Services in Chennai
             </p>
             <h2 className="mt-3 font-display text-3xl font-bold text-[#201815] sm:text-4xl">
-              Readable SEO content for packers and movers in Chennai, household
-              shifting services and bike transportation services.
+              Practical relocation support for homes, offices, bikes and cars.
             </h2>
             <p className="mt-5 text-lg leading-8 text-[#201815]/72">
-              A strong landing page should not only show service cards and
-              contact buttons. It should also explain what customers actually
-              need when they search for Agarwal Packers And Movers Chennai,
-              packers and movers Chennai, household shifting services in Chennai
-              or bike transportation services in Chennai. The content below is
-              written to be readable for visitors while naturally covering the
-              service terms and locality intent that matter for local SEO.
+              Moving in Chennai can involve apartment access, lift timing,
+              narrow lanes, parking restrictions, fragile goods, vehicle
+              movement and long-distance route planning. The sections below
+              explain how Agarwal Gatiway supports packing, loading, household
+              shifting, bike transportation, car transportation and car carrier
+              services for local and intercity moves.
             </p>
           </div>
 
@@ -315,14 +320,14 @@ export default function HomePage() {
                   Why Chennai families choose us
                 </p>
                 <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
-                  A local SEO landing page still needs strong trust cues, not
-                  just keywords.
+                  Reliable moving starts with clear planning before the truck
+                  arrives.
                 </h2>
                 <p className="mt-6 max-w-xl text-base leading-8 text-white/75">
-                  This design combines conversion-focused messaging with clear
-                  service explanations, local Chennai area targeting and direct
-                  contact paths so visitors can act immediately instead of
-                  searching for more information elsewhere.
+                  Families and businesses need clarity on packing, labour,
+                  timing, route, vehicle movement and delivery coordination.
+                  Our enquiry flow is built to collect those details quickly so
+                  the move can be planned with fewer surprises.
                 </p>
 
                 <div className="mt-8 space-y-4">
@@ -378,10 +383,9 @@ export default function HomePage() {
                 Packers and movers coverage across major Chennai localities.
               </h2>
               <p className="mt-5 text-base leading-8 text-[#201815]/70">
-                The main target is Chennai, and the page also supports local
-                searches for neighborhoods like Anna Nagar, Adyar, Velachery,
-                Tambaram, Porur, OMR, Sholinganallur and many more nearby
-                localities.
+                The main service area is Chennai, with support for
+                neighborhoods like Anna Nagar, Adyar, Velachery, Tambaram,
+                Porur, OMR, Sholinganallur and many more nearby localities.
               </p>
               <p className="mt-6 rounded-[1.75rem] border border-[#db200e]/10 bg-white p-5 text-sm leading-7 text-[#201815]/70 shadow-[0_20px_60px_rgba(32,24,21,0.08)]">
                 {locationSummary}
@@ -431,19 +435,18 @@ export default function HomePage() {
           <div className="rounded-[2.5rem] border border-[#db200e]/10 bg-white p-8 shadow-[0_20px_60px_rgba(32,24,21,0.08)] sm:p-10">
             <div className="max-w-4xl" data-reveal>
               <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#db200e]">
-                Area-Wise SEO Paragraphs
+                Area-Wise Moving Support
               </p>
               <h2 className="mt-3 font-display text-3xl font-bold text-[#201815] sm:text-4xl">
-                Chennai city paragraphs that include locality keywords in a
-                readable format.
+                Chennai locality coverage for home shifting and vehicle
+                transport.
               </h2>
               <p className="mt-5 text-base leading-8 text-[#201815]/72">
-                Search visibility improves when city and locality keywords are
-                present inside meaningful paragraphs instead of being dumped in
-                a random list. The content below is designed for that purpose,
-                so users can read it comfortably and search engines can still
-                understand strong Chennai relevance for packers and movers,
-                household shifting services and bike transportation services.
+                Each Chennai locality has different moving conditions, from
+                apartment towers and gated communities to busy streets and
+                suburban routes. Customers can request packing, loading,
+                household shifting, bike transportation and car carrier support
+                based on their pickup area, destination and item volume.
               </p>
             </div>
 
@@ -507,8 +510,8 @@ export default function HomePage() {
                   Need an urgent moving conversation?
                 </h3>
                 <p className="mt-4 text-base leading-7 text-white/75">
-                  Call now for household shifting or bike transportation in
-                  Chennai.
+                  Call now for household shifting, bike transportation or car
+                  carrier services in Chennai.
                 </p>
                 <a
                   href={phoneHref}
@@ -529,6 +532,8 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        <ChennaiKeywordsSection currentHref="/" />
 
         <section
           id="faq"
@@ -587,8 +592,9 @@ export default function HomePage() {
                     {phoneNumber}
                   </a>{" "}
                   or send a quick enquiry for Chennai household shifting
-                  services, bike transportation services or local packers and
-                  movers support.
+                  services, bike transportation services, car transportation
+                  services, car carrier services or local packers and movers
+                  support.
                 </p>
               </div>
 
@@ -627,6 +633,12 @@ export default function HomePage() {
             </a>
             <a href="#contact" className="font-semibold text-[#201815]/70">
               Contact Form
+            </a>
+            <a
+              href="#chennai-keywords"
+              className="font-semibold text-[#201815]/70"
+            >
+              Chennai Routes
             </a>
           </div>
         </div>

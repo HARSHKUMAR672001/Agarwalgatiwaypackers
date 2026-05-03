@@ -21,18 +21,22 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://agarwalgatiwaypacke
 
 export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),
-    title: "Agarwal Packers And Movers Chennai | Household Shifting & Bike Transportation",
+    title: "Agarwal Packers And Movers Chennai | Household Shifting, Bike & Car Transportation",
     description:
-        "Agarwal Gatiway offers packers and movers in Chennai with household shifting services, bike transportation services, packing, loading and relocation support across Anna Nagar, Adyar, Velachery, Tambaram and major Chennai localities. Call 9991973464.",
+        "Agarwal Gatiway offers packers and movers in Chennai with household shifting services, bike transportation services, Car Transportation services, Car Carrier Services, packing, loading and relocation support. Call 9991973464.",
     keywords: [
         "Agarwal Packers And Movers",
         "packers and movers",
         "Household shifting Services",
         "Bike Transportation services",
+        "Car Transportation services",
+        "Car Carrier Services",
         "Agarwal Packers And Movers Chennai",
         "packers and movers Chennai",
         "household shifting Chennai",
-        "bike transportation Chennai"
+        "bike transportation Chennai",
+        "car transportation Chennai",
+        "car carrier Chennai"
     ],
     robots: {
         index: true,
@@ -45,7 +49,7 @@ export const metadata: Metadata = {
         type: "website",
         locale: "en_IN",
         title: "Agarwal Packers And Movers Chennai",
-        description: "Packers and movers in Chennai for household shifting, bike transportation and relocation support. Call 9991973464.",
+        description: "Packers and movers in Chennai for household shifting, bike transportation, car transportation, car carrier and relocation support. Call 9991973464.",
         url: "/",
         images: [
             {

@@ -97,6 +97,88 @@ export function getAreaFromLocationSlug(slug: string) {
     return locationPages.find((page) => page.slug === slug)?.area;
 }
 
+export const chennaiRouteDestinations = [
+    "Pallakad",
+    "Coimbatore",
+    "Mumbai",
+    "Pune",
+    "Vishakapatnam",
+    "Delhi",
+    "Gurgaon",
+    "Kolkata",
+    "Kochin",
+    "Trivandrum",
+    "Madurai",
+    "Trichy",
+    "Kanyakumari",
+    "Nagpur",
+    "Ahmedabad",
+    "Bhopal",
+    "Indore Nashik",
+    "Noida",
+    "Solapur",
+    "Kolhapur",
+    "Dehradun",
+    "Jammu Kashmir",
+    "Bhatinda",
+    "Chandigarh",
+    "Sivakashi",
+    "Tuticorin",
+    "Patna",
+    "Hubbli",
+    "Goa",
+    "Dhanbad",
+    "Bhubaneswar",
+    "Hyderabad",
+    "All Over India"
+] as const;
+
+export type ChennaiRouteDestination = (typeof chennaiRouteDestinations)[number];
+
+export function getChennaiRouteSlug(destination: string) {
+    return `packers-and-movers-chennai-to-${slugifyLocation(destination)}`;
+}
+
+export const chennaiRoutePages = chennaiRouteDestinations.map((destination) => {
+    const title = `Packers and Movers Chennai to ${destination}`;
+
+    return {
+        destination,
+        title,
+        keyword: title.toUpperCase(),
+        slug: getChennaiRouteSlug(destination),
+        href: `/${getChennaiRouteSlug(destination)}`
+    };
+}) as readonly {
+    destination: ChennaiRouteDestination;
+    title: string;
+    keyword: string;
+    slug: string;
+    href: string;
+}[];
+
+export const chennaiKeywordPages = [
+    {
+        title: "Packers and Movers Chennai",
+        keyword: "PACKERS AND MOVERS CHENNAI",
+        href: "/"
+    },
+    ...chennaiRoutePages.map((page) => ({
+        title: page.title,
+        keyword: page.keyword,
+        href: page.href
+    }))
+] as const;
+
+export const generatedLandingPages = [
+    ...locationPages,
+    ...chennaiRoutePages
+] as const;
+
+export function getChennaiRouteFromSlug(slug: string) {
+    return chennaiRoutePages.find((page) => page.slug === slug);
+}
+
 export const featureCards = [
     {
         title: "Household shifting",
@@ -105,6 +187,10 @@ export const featureCards = [
     {
         title: "Bike transportation",
         description: "Careful two-wheeler pickup and secure transit handling for local Chennai transfers and outstation delivery."
+    },
+    {
+        title: "Car transportation",
+        description: "Car transportation services and car carrier services for owners who need safer vehicle movement from Chennai."
     },
     {
         title: "Fast response",
@@ -118,20 +204,20 @@ export const featureCards = [
 
 export const seoHighlights = [
     {
-        title: "Same page clarity",
-        description: "All important keywords and Chennai service areas are placed naturally across the page for strong local SEO relevance."
+        title: "Clear service planning",
+        description: "Share pickup area, destination, goods volume and vehicle shifting needs so the move can be planned properly."
     },
     {
-        title: "Mobile first design",
-        description: "Readable sections, sticky contact actions and large tap targets keep the site usable on phones and tablets."
+        title: "Packing support",
+        description: "Household items, appliances, furniture and fragile goods can be discussed before confirming packing and loading support."
     },
     {
-        title: "Direct enquiry capture",
-        description: "The contact form collects name, phone, area and service type so every Chennai lead comes with useful move details."
+        title: "Vehicle relocation",
+        description: "Bike transportation, Car Transportation services and Car Carrier Services can be requested for local or intercity routes."
     },
     {
-        title: "Brand identity",
-        description: "The red and yellow palette keeps the landing page consistent with the Agarwal brand presence."
+        title: "Quick contact",
+        description: "Call, WhatsApp or submit the enquiry form to discuss household shifting, office moves or route-based relocation."
     }
 ] as const;
 
@@ -143,6 +229,14 @@ export const services = [
     {
         title: "Bike Transportation Services",
         description: "Two-wheeler movement support with secure handling for residents shifting homes, students relocating or owners moving their bike out of Chennai."
+    },
+    {
+        title: "Car Transportation Services",
+        description: "Car transportation services for customers moving their vehicle from Chennai with planned pickup, carrier coordination and route support."
+    },
+    {
+        title: "Car Carrier Services",
+        description: "Car carrier services for intercity vehicle movement, including route planning, loading coordination and safer transit handling."
     },
     {
         title: "Office and Commercial Relocation",
@@ -165,73 +259,81 @@ export const services = [
 export const longFormBlocks = [
     {
         eyebrow: "Packers and Movers in Chennai",
-        title: "Support for local home moves, rentals, offices and intercity shifting.",
+        title: "Complete moving support for homes, rentals, offices and long-distance routes.",
         paragraphs: [
-            "Customers looking for packers and movers in Chennai usually need more than just a truck. They need practical support for packing daily-use items, wrapping furniture, managing appliances, coordinating pickup timing, and moving everything through busy roads, apartment gates, narrow lanes, office entries or lift access points. Agarwal Gatiway Packers and Movers is positioned around that real search intent, which is why this page repeatedly targets the keyword packers and movers Chennai in a natural, service-first way.",
-            "Whether the move starts in a family apartment, a rented flat, a student accommodation or a small commercial unit, the requirement is usually the same: organized packing, careful loading, smooth transportation and clear communication. That is why this Chennai page focuses on practical moving needs, not only promotional lines. It is built to answer common search phrases such as Agarwal Packers And Movers Chennai, movers and packers Chennai, local shifting in Chennai and affordable packers and movers near Chennai localities."
+            "Agarwal Gatiway Packers and Movers helps customers plan household shifting in Chennai with practical support from the first enquiry to final unloading. The team can guide packing needs, item handling, pickup timing, loading access, vehicle requirement and route planning for apartment moves, villa shifting, rental relocation and office movement.",
+            "Every move is different, so the work is planned around the customer route, item volume, floor level, lift availability, parking access and delivery schedule. Whether the requirement is local Chennai shifting or an intercity move from Chennai, the focus stays on organized packing, careful loading, timely transport and clear communication."
         ]
     },
     {
         eyebrow: "Household Shifting Services",
-        title: "Home relocation content written around what Chennai families search for.",
+        title: "Household shifting with packing, loading and delivery coordination.",
         paragraphs: [
-            "Household shifting services in Chennai often involve a mix of furniture, kitchen goods, clothes, electronics, fragile decor, boxes, books, cots, mattresses, wardrobes and office-from-home equipment. Families moving from one neighborhood to another usually search for household shifting services Chennai, safe house shifting Chennai or home relocation experts in Chennai because they want a team that understands the difference between simple transport and full shifting support.",
-            "This page therefore keeps household shifting services as a core keyword and backs it up with useful context. It speaks to customers relocating between apartment clusters in Anna Nagar, gated communities in Velachery, family homes in Tambaram, premium neighborhoods near Alwarpet, and suburban growth belts like Medavakkam, Perumbakkam or Guduvanchery. That makes the content stronger for search engines and more useful for real people who want clarity before calling."
+            "Household goods usually include furniture, kitchen items, appliances, clothes, electronics, cots, mattresses, wardrobes, fragile decor and daily-use boxes. The service is planned so these items can be packed, grouped and loaded in a more systematic way before transport begins.",
+            "Customers moving between Anna Nagar, Adyar, Velachery, Tambaram, Porur, OMR, Medavakkam, Perumbakkam and nearby areas can request support for local moves as well as outstation relocation. The enquiry call helps confirm packing material, vehicle size, labour requirement and expected shifting time."
         ]
     },
     {
         eyebrow: "Bike Transportation Services",
-        title: "Two-wheeler shifting content for Chennai city and outstation demand.",
+        title: "Two-wheeler shifting for local and outstation relocation needs.",
         paragraphs: [
-            "Bike transportation services in Chennai are a high-intent search because customers often relocate for jobs, studies, rental changes or family moves and need their two-wheeler shifted safely. Some want pickup and delivery within Chennai, while others need bike transport from Chennai to another city. That is why the keyword bike transportation services appears throughout this page together with related phrases like bike parcel Chennai, two-wheeler shifting Chennai and safe bike transport from Chennai.",
-            "A readable page should explain that bike transportation is not a separate isolated need. It is often part of a broader household shifting plan. One customer may move furniture from Adyar, another may shift a bike from Sholinganallur, and another may need both household items and a scooter moved from Tambaram or Porur. By covering these journeys naturally, the page builds stronger relevance for search engines and higher trust for the visitor reading it."
+            "Bike transportation services are useful for students, working professionals, tenants and families who need a two-wheeler moved with their household goods or as a separate vehicle movement. The team can discuss pickup point, destination, model details and timing before the move is scheduled.",
+            "Two-wheeler relocation can be requested for local Chennai transfers or intercity routes from Chennai. Customers can also combine bike transport with home shifting, office relocation, packing and loading support for a single coordinated move."
+        ]
+    },
+    {
+        eyebrow: "Car Transportation Services",
+        title: "Car carrier support for vehicle movement from Chennai.",
+        paragraphs: [
+            "Car Transportation services and Car Carrier Services help customers move a vehicle when shifting home, changing job location or sending a car to another city. The enquiry can include car model, pickup area, destination city, preferred date and whether household goods are moving on the same route.",
+            "For intercity relocation, car carrier planning is handled along with route coordination and communication. Customers can ask for car carrier services from Chennai together with household shifting services, bike transportation services, packing and loading support."
         ]
     }
 ] as const;
 
 export const trustPoints = [
     {
-        title: "Clear Chennai positioning",
-        description: "Headlines, metadata and section copy all reinforce the Chennai location to improve local query relevance."
+        title: "Move planning before pickup",
+        description: "The enquiry call collects pickup area, destination, item volume, access details and vehicle shifting needs before scheduling the move."
     },
     {
-        title: "Fast trust signals",
-        description: "Contact number, service types, FAQ answers and area coverage appear quickly without forcing extra clicks."
+        title: "Packing and loading care",
+        description: "Household goods, furniture, appliances and fragile items are discussed in advance so packing and loading support can be arranged properly."
     },
     {
-        title: "Color-led brand recall",
-        description: "The requested red and yellow palette keeps the layout bold and memorable while staying warm and approachable."
+        title: "Bike and car carrier support",
+        description: "Customers can request two-wheeler transport, Car Transportation services or Car Carrier Services along with household shifting."
     },
     {
-        title: "Ready for lead emails",
-        description: "The enquiry form submits through a secure Nodemailer-powered backend instead of exposing credentials in the browser."
+        title: "Direct coordination",
+        description: "Phone, WhatsApp and enquiry form support keep communication simple for local Chennai moves and intercity relocation routes."
     }
 ] as const;
 
 export const areaWiseParagraphs = [
     {
-        title: "Central Chennai movers content",
-        description: "Customers searching for packers and movers in Mylapore, Royapettah, Triplicane, T Nagar, Alwarpet, Mandeville, Nungambakkam, Kilpauk, Aminjikarai, Choolaimedu, Kodambakkam and Vadapalani usually expect quick access, apartment-friendly shifting and dependable local coordination. This paragraph helps cover those central Chennai location terms while keeping the reading flow natural."
+        title: "Central Chennai moving support",
+        description: "For Mylapore, Royapettah, Triplicane, T Nagar, Alwarpet, Nungambakkam, Kilpauk, Aminjikarai, Choolaimedu, Kodambakkam and Vadapalani, customers often need apartment-friendly packing, careful loading and timing coordination around narrow streets, parking limits and building access."
     },
     {
         title: "South Chennai household shifting",
-        description: "For household shifting services in Adyar, Besant Nagar, Thiruvanmiyur, Velachery, Madipakkam, Medavakkam, Nanganallur, Adambakkam, Alandur, Guindy, Pallikaranai, Perungudi and Kottivakkam, customers often look for careful packing, timing coordination and smooth movement between residential blocks, independent homes and gated communities."
+        description: "In Adyar, Besant Nagar, Thiruvanmiyur, Velachery, Madipakkam, Medavakkam, Nanganallur, Adambakkam, Alandur, Guindy, Pallikaranai, Perungudi and Kottivakkam, the service is suited for apartments, independent houses, gated communities and family relocations with household goods, bikes or cars."
     },
     {
-        title: "OMR and ECR keyword coverage",
-        description: "The OMR and ECR belt is important for search traffic, so this page also includes Sholinganallur, OMR, Thoraipakkam, Navalur, Siruseri, Kelambakkam, East Coast Road, Perumbakkam, Mahindra World City, Guduvanchery and Perungalathur. These localities bring strong demand for both family shifting and bike transportation services linked to rental, job and campus moves."
+        title: "OMR and ECR relocation routes",
+        description: "Sholinganallur, OMR, Thoraipakkam, Navalur, Siruseri, Kelambakkam, East Coast Road, Perumbakkam, Mahindra World City, Guduvanchery and Perungalathur often need rental shifting, employee relocation, student moves, bike transportation and car carrier support for city and outstation routes."
     },
     {
-        title: "West Chennai relocation terms",
-        description: "Searchers looking for packers and movers in Porur, Ramapuram, KK Nagar, Mugalivakkam, Kolapakkam, Iyyappanthangal, Poonamallee, Maduravoyal, Nolambur, Mogappair, Ambattur and Sriperumbudur often need a balance of local moving support and route planning for larger household goods. Including these terms in paragraph form adds depth to the Chennai coverage."
+        title: "West Chennai shifting support",
+        description: "Porur, Ramapuram, KK Nagar, Mugalivakkam, Kolapakkam, Iyyappanthangal, Poonamallee, Maduravoyal, Nolambur, Mogappair, Ambattur and Sriperumbudur moves usually require route planning for larger household goods, office items, storage materials and vehicle movement."
     },
     {
-        title: "North and outer Chennai searches",
-        description: "This page also supports searches from Anna Nagar, Kolathur, Tiruvottiyur, Avadi, Kadirvedu, Kavankarai, Peerkankaranai, Chromepet, Ekkaduthangal, Tambaram and nearby industrial or fast-growing residential stretches. These searches are often tied to family house shifting, office transfers or combined household and vehicle transport requirements."
+        title: "North and outer Chennai coverage",
+        description: "Anna Nagar, Kolathur, Tiruvottiyur, Avadi, Kadirvedu, Kavankarai, Peerkankaranai, Chromepet, Ekkaduthangal and Tambaram customers can request household shifting, office transfers, loading support, bike transportation and car transportation services based on the route and item volume."
     },
     {
-        title: "Suburban and destination relevance",
-        description: "To broaden keyword relevance further, the page includes Kanchipuram, Arakkonam, Chengalpattu, Kadapakkam and even destination-oriented terms like Kumbakonam where customers may move to or from Chennai. This helps the site rank not just for one central keyword but for a wider set of city-plus-service combinations tied to real relocation searches."
+        title: "Suburban and intercity moves",
+        description: "For Kanchipuram, Arakkonam, Chengalpattu, Kadapakkam, Kumbakonam and other connected routes, customers can discuss intercity relocation, packing material, loading labour, vehicle carrier needs and delivery coordination before confirming the move."
     }
 ] as const;
 
@@ -242,7 +344,7 @@ export const processSteps = [
     },
     {
         title: "Receive a callback",
-        description: "We discuss timing, shifting volume, access details and any bike or fragile-item requirements."
+        description: "We discuss timing, shifting volume, access details and any bike, car carrier or fragile-item requirements."
     },
     {
         title: "Schedule the move",
@@ -262,6 +364,10 @@ export const faqs = [
     {
         question: "Can I book bike transportation services from Chennai?",
         answer: "Yes. Bike transportation services are included in the enquiry form and service sections so customers can clearly request two-wheeler pickup and movement support."
+    },
+    {
+        question: "Do you provide car transportation services and car carrier services?",
+        answer: "Yes. Customers can request car transportation services or car carrier services along with household shifting, bike transportation or intercity relocation enquiries from Chennai."
     },
     {
         question: "Which Chennai localities are covered?",

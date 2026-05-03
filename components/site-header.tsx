@@ -26,7 +26,7 @@ export function SiteHeader({ phoneHref, phoneNumber, locationsLabel = "Chennai A
         <>
             <header className="sticky top-0 z-40 border-b border-black/5 bg-white/80 backdrop-blur-xl">
                 <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-                    <a href="#top" className="flex items-center gap-3">
+                    <a href="/" className="flex items-center gap-3">
                         <Image
                             src="/images/logo.png"
                             alt="Agarwal Gatiway Packers and Movers logo"

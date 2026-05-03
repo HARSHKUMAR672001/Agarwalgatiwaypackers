@@ -228,6 +228,8 @@ export function EnquiryForm({ areas, phoneHref, phoneNumber, locationName = "Che
                             <option value="">Select service</option>
                             <option value="Household Shifting Services">Household Shifting Services</option>
                             <option value="Bike Transportation Services">Bike Transportation Services</option>
+                            <option value="Car Transportation Services">Car Transportation Services</option>
+                            <option value="Car Carrier Services">Car Carrier Services</option>
                             <option value="Packers and Movers">Packers and Movers</option>
                             <option value="Office Relocation">Office Relocation</option>
                             <option value="Loading and Unloading">Loading and Unloading</option>
@@ -240,7 +242,7 @@ export function EnquiryForm({ areas, phoneHref, phoneNumber, locationName = "Che
                     <textarea
                         rows={4}
                         className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-[#201815] outline-none transition focus:border-[#db200e] focus:ring-4 focus:ring-[#db200e]/10"
-                        placeholder="Tell us about your household items, floor level, bike model or preferred timing."
+                        placeholder="Tell us about your household items, floor level, bike or car model, route or preferred timing."
                         required
                         value={form.message}
                         onChange={(event) => updateField("message", event.target.value)}
@@ -269,7 +271,7 @@ export function EnquiryForm({ areas, phoneHref, phoneNumber, locationName = "Che
                 </div>
                 <div>
                     <p className="font-semibold text-white">Best For</p>
-                    <p className="mt-2 leading-6">Local {locationName} moves, household shifting and bike transport enquiries.</p>
+                    <p className="mt-2 leading-6">Local {locationName} moves, household shifting, bike transport and car carrier enquiries.</p>
                 </div>
             </div>
 

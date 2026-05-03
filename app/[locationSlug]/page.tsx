@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
+import { ChennaiKeywordsSection } from "@/components/chennai-keywords-section";
 import { EnquiryForm } from "@/components/enquiry-form";
 import { SiteHeader } from "@/components/site-header";
 import {
@@ -10,6 +11,8 @@ import {
   faqs,
   featureCards,
   getAreaFromLocationSlug,
+  getChennaiRouteFromSlug,
+  generatedLandingPages,
   locationPages,
   longFormBlocks,
   phoneHref,
@@ -31,21 +34,21 @@ const siteUrl =
 
 const topTrustCards = [
   {
-    title: "Responsive contact flow",
+    title: "Quick move discussion",
     description:
-      "The page keeps phone, WhatsApp and form actions visible so mobile visitors can contact you in one tap.",
+      "Phone, WhatsApp and enquiry form options make it easy to share route, goods volume, vehicle details and timing.",
   },
   {
-    title: "Service-led structure",
+    title: "Combined relocation support",
     description:
-      "Household shifting services and bike transportation services are highlighted early because those are high-intent searches.",
+      "Household shifting, bike transportation, car carrier services, packing and loading can be discussed together.",
   },
 ] as const;
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return locationPages.map((page) => ({
+  return generatedLandingPages.map((page) => ({
     locationSlug: page.slug,
   }));
 }
@@ -55,8 +58,9 @@ export async function generateMetadata({
 }: LocationPageProps): Promise<Metadata> {
   const { locationSlug } = await params;
   const locationName = getAreaFromLocationSlug(locationSlug);
+  const routePage = getChennaiRouteFromSlug(locationSlug);
 
-  if (!locationName) {
+  if (!locationName && !routePage) {
     return {
       title: "Location Not Found",
       robots: {
@@ -67,8 +71,17 @@ export async function generateMetadata({
   }
 
   const canonicalPath = `/${locationSlug}`;
-  const title = `Agarwal Packers And Movers ${locationName} | Household Shifting & Bike Transportation`;
-  const description = `Agarwal Gatiway offers packers and movers in ${locationName} with household shifting services, bike transportation services, packing, loading and relocation support. Call ${phoneNumber}.`;
+  const pageTitle = routePage
+    ? routePage.title
+    : `Agarwal Packers And Movers ${locationName}`;
+  const packersKeyword = routePage
+    ? routePage.title
+    : `packers and movers in ${locationName}`;
+  const keywordTarget = routePage
+    ? `Chennai to ${routePage.destination}`
+    : locationName!;
+  const title = `${pageTitle} | Household Shifting, Car Carrier & Bike Transportation`;
+  const description = `Agarwal Gatiway offers ${packersKeyword} with household shifting services, bike transportation services, Car Transportation services, Car Carrier Services, packing, loading and relocation support. Call ${phoneNumber}.`;
 
   return {
     metadataBase: new URL(siteUrl),
@@ -79,13 +92,20 @@ export async function generateMetadata({
       "packers and movers",
       "Household shifting Services",
       "Bike Transportation services",
-      `Agarwal Packers And Movers ${locationName}`,
-      `packers and movers ${locationName}`,
-      `packers and movers in ${locationName}`,
-      `household shifting ${locationName}`,
-      `household shifting services in ${locationName}`,
-      `bike transportation ${locationName}`,
-      `bike transportation services in ${locationName}`,
+      "Car Transportation services",
+      "Car Carrier Services",
+      `Agarwal Packers And Movers ${keywordTarget}`,
+      `packers and movers ${keywordTarget}`,
+      `packers and movers in ${keywordTarget}`,
+      `household shifting ${keywordTarget}`,
+      `household shifting services in ${keywordTarget}`,
+      `bike transportation ${keywordTarget}`,
+      `bike transportation services in ${keywordTarget}`,
+      `car transportation ${keywordTarget}`,
+      `car transportation services in ${keywordTarget}`,
+      `car carrier ${keywordTarget}`,
+      `car carrier services in ${keywordTarget}`,
+      ...(routePage ? [routePage.keyword] : []),
     ],
     robots: {
       index: true,
@@ -112,18 +132,37 @@ export async function generateMetadata({
 
 export default async function LocationPage({ params }: LocationPageProps) {
   const { locationSlug } = await params;
-  const locationName = getAreaFromLocationSlug(locationSlug);
+  const areaName = getAreaFromLocationSlug(locationSlug);
+  const routePage = getChennaiRouteFromSlug(locationSlug);
 
-  if (!locationName) {
+  if (!areaName && !routePage) {
     notFound();
   }
 
+  const isRoutePage = Boolean(routePage);
+  const locationName = routePage
+    ? `Chennai to ${routePage.destination}`
+    : areaName!;
+  const pageTitleKeyword = routePage
+    ? routePage.title
+    : `Agarwal Packers And Movers in ${locationName}`;
+  const packersKeyword = routePage
+    ? routePage.title
+    : `packers and movers in ${locationName}`;
+  const moveScope = routePage
+    ? `from Chennai to ${routePage.destination}`
+    : `across ${locationName}`;
+  const localityPhrase = routePage
+    ? `Chennai pickup localities and ${routePage.destination} delivery planning`
+    : `${locationName} localities`;
+  const sectionAreaLabel = routePage ? "Chennai Route" : `${locationName} Service Area`;
+  const routeKeywordHref = routePage?.href;
   const canonicalPath = `/${locationSlug}`;
   const whatsappHref = `https://wa.me/919991973464?text=${encodeURIComponent(
-    `Hello Agarwal Gatiway, I need a quote for my move in ${locationName}.`
+    `Hello Agarwal Gatiway, I need a quote for my move ${moveScope}.`
   )}`;
   const whatsappHelpHref = `https://wa.me/919991973464?text=${encodeURIComponent(
-    `Hello Agarwal Gatiway, I need help with packers and movers in ${locationName}.`
+    `Hello Agarwal Gatiway, I need help with ${packersKeyword}.`
   )}`;
 
   const localizedFeatureCards = featureCards.map((card) => ({
@@ -138,20 +177,49 @@ export default async function LocationPage({ params }: LocationPageProps) {
     title: localizeText(service.title, locationName),
     description: localizeText(service.description, locationName),
   }));
-  const localizedLongFormBlocks = longFormBlocks.map((block) => ({
-    eyebrow: localizeText(block.eyebrow, locationName),
-    title: localizeText(block.title, locationName),
-    paragraphs: block.paragraphs.map((paragraph) =>
-      localizeText(paragraph, locationName)
-    ),
-  }));
+  const localizedLongFormBlocks = routePage
+    ? [
+        {
+          eyebrow: routePage.title,
+          title: `Moving support from Chennai to ${routePage.destination}.`,
+          paragraphs: [
+            `For ${routePage.title}, customers can request packing, loading, household shifting, bike transportation and car carrier support from Chennai pickup areas to ${routePage.destination}. The move can be planned around item volume, vehicle requirement, floor level, pickup timing and delivery coordination.`,
+            `The route discussion helps confirm whether the customer needs only goods transport, a complete packing plan, two-wheeler movement, Car Transportation services or Car Carrier Services. This keeps the Chennai to ${routePage.destination} relocation clearer before the move date is fixed.`,
+          ],
+        },
+        {
+          eyebrow: "Household Shifting Services",
+          title: `Home relocation from Chennai to ${routePage.destination}.`,
+          paragraphs: [
+            `Household shifting from Chennai to ${routePage.destination} may include furniture, kitchen goods, electronics, appliances, clothes, mattresses, boxes and fragile items. The enquiry call helps estimate packing material, labour support, vehicle size and expected transit planning.`,
+            `Customers can share pickup locality, destination address, preferred date and item details so the team can coordinate the relocation plan for Chennai to ${routePage.destination} with practical communication from start to finish.`,
+          ],
+        },
+        {
+          eyebrow: "Vehicle Transportation Services",
+          title: `Bike and car carrier services on the Chennai to ${routePage.destination} route.`,
+          paragraphs: [
+            `Bike transportation services and Car Transportation services can be requested together with household shifting or separately for the Chennai to ${routePage.destination} route. Customers can provide vehicle model, pickup point, destination and timing preference during enquiry.`,
+            `Car Carrier Services are useful when a customer wants a car moved along with household goods or as an independent vehicle movement. Route coordination, pickup timing and delivery planning are discussed before confirming the service.`,
+          ],
+        },
+      ]
+    : longFormBlocks.map((block) => ({
+        eyebrow: localizeText(block.eyebrow, locationName),
+        title: localizeText(block.title, locationName),
+        paragraphs: block.paragraphs.map((paragraph) =>
+          localizeText(paragraph, locationName)
+        ),
+      }));
   const localizedTrustPoints = trustPoints.map((point) => ({
     title: localizeText(point.title, locationName),
     description: localizeText(point.description, locationName),
   }));
   const localizedAreaParagraphs = areaWiseParagraphs.map((item) => ({
-    title: localizeText(item.title, locationName),
-    description: localizeText(item.description, locationName),
+    title: routePage ? item.title : localizeText(item.title, locationName),
+    description: routePage
+      ? item.description
+      : localizeText(item.description, locationName),
   }));
   const localizedProcessSteps = processSteps.map((step) => ({
     title: localizeText(step.title, locationName),
@@ -169,12 +237,14 @@ export default async function LocationPage({ params }: LocationPageProps) {
     locationName,
     ...chennaiAreas.filter((area) => area !== locationName),
   ];
-  const locationSummary = `Agarwal Gatiway Packers and Movers supports packers and movers in ${locationName}, household shifting services in ${locationName} and bike transportation services around ${locationName} with Chennai-wide relocation support.`;
+  const locationSummary = routePage
+    ? `Agarwal Gatiway Packers and Movers supports ${routePage.keyword}, household shifting services, bike transportation services, Car Transportation services and Car Carrier Services from Chennai to ${routePage.destination}.`
+    : `Agarwal Gatiway Packers and Movers supports packers and movers in ${locationName}, household shifting services in ${locationName}, bike transportation services, Car Transportation services and Car Carrier Services around ${locationName} with Chennai-wide relocation support.`;
   const movingCompanyJsonLd = {
     "@context": "https://schema.org",
     "@type": "MovingCompany",
     name: "Agarwal Gatiway Packers and Movers",
-    description: `Packers and movers in ${locationName} offering household shifting services, bike transportation services, packing and relocation support.`,
+    description: `${pageTitleKeyword} offering household shifting services, bike transportation services, Car Transportation services, Car Carrier Services, packing and relocation support.`,
     telephone: "+91-9991973464",
     url: `${siteUrl}${canonicalPath}`,
     areaServed: {
@@ -185,6 +255,8 @@ export default async function LocationPage({ params }: LocationPageProps) {
       "Packers and Movers",
       "Household Shifting Services",
       "Bike Transportation Services",
+      "Car Transportation Services",
+      "Car Carrier Services",
       "Loading and Unloading",
       "Local and Intercity Relocation",
     ],
@@ -203,7 +275,7 @@ export default async function LocationPage({ params }: LocationPageProps) {
       {
         "@type": "ListItem",
         position: 2,
-        name: `Packers and Movers in ${locationName}`,
+        name: pageTitleKeyword,
         item: `${siteUrl}${canonicalPath}`,
       },
     ],
@@ -229,11 +301,11 @@ export default async function LocationPage({ params }: LocationPageProps) {
       <div className="border-b border-white/10 bg-[#db200e] text-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
           <p className="font-semibold">
-            Agarwal Gatiway Packers &amp; Movers in {locationName}
+            Agarwal Gatiway {pageTitleKeyword}
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <span className="rounded-full bg-white/12 px-4 py-2 font-medium">
-              Household shifting and bike transport
+              Household shifting, bike and car transport
             </span>
             <a
               href={phoneHref}
@@ -248,7 +320,7 @@ export default async function LocationPage({ params }: LocationPageProps) {
       <SiteHeader
         phoneHref={phoneHref}
         phoneNumber={phoneNumber}
-        locationsLabel={`${locationName} Areas`}
+        locationsLabel={isRoutePage ? "Chennai Routes" : `${locationName} Areas`}
       />
 
       <main id="top">
@@ -261,21 +333,21 @@ export default async function LocationPage({ params }: LocationPageProps) {
               <div data-reveal>
                 <span className="inline-flex items-center gap-2 rounded-full border border-[#db200e]/10 bg-white/80 px-4 py-2 text-sm font-semibold text-[#db200e] shadow-[0_20px_60px_rgba(32,24,21,0.08)]">
                   <span className="h-2.5 w-2.5 rounded-full bg-[#fcca0d]" />
-                  {locationName} local and intercity relocation support
+                  {locationName} relocation support
                 </span>
 
                 <h1 className="mt-6 max-w-4xl font-display text-4xl font-extrabold leading-tight text-[#201815] sm:text-5xl lg:text-6xl">
-                  Agarwal Packers And Movers in {locationName} for safe
-                  household shifting and bike transportation services.
+                  {pageTitleKeyword} for safe household shifting, bike
+                  transportation and car carrier services.
                 </h1>
 
                 <p className="mt-6 max-w-2xl text-lg leading-8 text-[#201815]/75">
-                  Agarwal Gatiway helps families, tenants and businesses move
-                  across {locationName} with careful packing, organized loading,
-                  on-time pickup and responsive support. If someone searches for
-                  packers and movers in {locationName}, household shifting
-                  services or bike transportation services, this page is built
-                  to answer that need clearly.
+                  Agarwal Gatiway helps families, tenants and businesses move{" "}
+                  {moveScope} with careful packing, organized loading, on-time
+                  pickup and responsive support. If you need {packersKeyword},
+                  household shifting services, bike transportation services, Car
+                  Transportation services or Car Carrier Services, the team can
+                  discuss the move details clearly.
                 </p>
 
                 <div className="mt-8 flex flex-wrap gap-4">
@@ -330,18 +402,17 @@ export default async function LocationPage({ params }: LocationPageProps) {
                   </div>
                   <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#db200e]">
-                      Popular {locationName} search intent
+                      Popular {locationName} services
                     </p>
                     <p className="mt-2 text-base leading-7 text-[#201815]/75">
-                      This landing page targets searches for{" "}
-                      <strong>
-                        Agarwal Packers And Movers {locationName}
-                      </strong>
-                      ,{" "}
-                      <strong>packers and movers {locationName}</strong>,{" "}
-                      <strong>household shifting services</strong> and{" "}
-                      <strong>bike transportation services</strong> with
-                      location-specific content for {locationName} customers.
+                      Customers can contact us for{" "}
+                      <strong>{pageTitleKeyword}</strong>,{" "}
+                      <strong>{packersKeyword}</strong>,{" "}
+                      <strong>household shifting services</strong>,{" "}
+                      <strong>bike transportation services</strong>,{" "}
+                      <strong>Car Transportation services</strong> and{" "}
+                      <strong>Car Carrier Services</strong> for {locationName}
+                      customers.
                     </p>
                   </div>
                 </div>
@@ -389,7 +460,7 @@ export default async function LocationPage({ params }: LocationPageProps) {
               </p>
               <h2 className="mt-3 max-w-3xl font-display text-3xl font-bold text-[#201815] sm:text-4xl">
                 Packers and movers services designed for {locationName} homes,
-                offices and vehicle shifts.
+                offices, bikes and car carrier requirements.
               </h2>
             </div>
             <p
@@ -398,8 +469,9 @@ export default async function LocationPage({ params }: LocationPageProps) {
             >
               The page is focused on the services people typically look for
               first: packers and movers, household shifting services and bike
-              transportation services from {locationName} localities to city or
-              outstation destinations.
+              transportation services, Car Transportation services and Car
+              Carrier Services from {localityPhrase} to city or outstation
+              destinations.
             </p>
           </div>
 
@@ -429,21 +501,18 @@ export default async function LocationPage({ params }: LocationPageProps) {
         <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
           <div className="max-w-4xl" data-reveal>
             <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#db200e]">
-              Detailed {locationName} Content
+              Moving Services for {locationName}
             </p>
             <h2 className="mt-3 font-display text-3xl font-bold text-[#201815] sm:text-4xl">
-              Readable SEO content for packers and movers in {locationName},
-              household shifting services and bike transportation services.
+              Practical relocation support for homes, offices, bikes and cars.
             </h2>
             <p className="mt-5 text-lg leading-8 text-[#201815]/72">
-              A strong landing page should not only show service cards and
-              contact buttons. It should also explain what customers actually
-              need when they search for Agarwal Packers And Movers{" "}
-              {locationName}, packers and movers {locationName}, household
-              shifting services in {locationName} or bike transportation
-              services in {locationName}. The content below is written to be
-              readable for visitors while naturally covering the service terms
-              and locality intent that matter for local SEO.
+              Moving for {locationName} can involve apartment access, pickup
+              timing, fragile goods, loading labour, vehicle movement and route
+              coordination. The sections below explain how Agarwal Gatiway
+              supports packing, loading, household shifting, bike
+              transportation, car transportation and car carrier services for
+              {isRoutePage ? "this route" : "local and intercity moves"}.
             </p>
           </div>
 
@@ -478,17 +547,19 @@ export default async function LocationPage({ params }: LocationPageProps) {
             <div className="grid gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
               <div data-reveal>
                 <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#fcca0d]">
-                  Why {locationName} families choose us
+                  {isRoutePage
+                    ? "Why customers choose this route support"
+                    : `Why ${locationName} families choose us`}
                 </p>
                 <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
-                  A local SEO landing page still needs strong trust cues, not
-                  just keywords.
+                  Reliable moving starts with clear planning before the truck
+                  arrives.
                 </h2>
                 <p className="mt-6 max-w-xl text-base leading-8 text-white/75">
-                  This design combines conversion-focused messaging with clear
-                  service explanations, local {locationName} area targeting and
-                  direct contact paths so visitors can act immediately instead
-                  of searching for more information elsewhere.
+                  Families and businesses need clarity on packing, labour,
+                  timing, route, vehicle movement and delivery coordination.
+                  Our enquiry flow is built to collect those details quickly so
+                  the move can be planned with fewer surprises.
                 </p>
 
                 <div className="mt-8 space-y-4">
@@ -538,17 +609,17 @@ export default async function LocationPage({ params }: LocationPageProps) {
           <div className="grid gap-8 lg:grid-cols-[330px_minmax(0,1fr)]">
             <div data-reveal>
               <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#db200e]">
-                {locationName} Service Area
+                {sectionAreaLabel}
               </p>
               <h2 className="mt-3 font-display text-3xl font-bold text-[#201815] sm:text-4xl">
-                Packers and movers coverage for {locationName} and nearby
-                Chennai localities.
+                {isRoutePage
+                  ? `Packers and movers coverage for ${locationName} enquiries.`
+                  : `Packers and movers coverage for ${locationName} and nearby Chennai localities.`}
               </h2>
               <p className="mt-5 text-base leading-8 text-[#201815]/70">
-                This page is focused on {locationName}, and the same service
-                structure is available across major Chennai neighborhoods like
-                Anna Nagar, Adyar, Velachery, Tambaram, Porur, OMR,
-                Sholinganallur and many more nearby localities.
+                {isRoutePage
+                  ? `This page is focused on the ${locationName} route, with pickup support from major Chennai neighborhoods like Anna Nagar, Adyar, Velachery, Tambaram, Porur, OMR and Sholinganallur.`
+                  : `This page is focused on ${locationName}, and the same service structure is available across major Chennai neighborhoods like Anna Nagar, Adyar, Velachery, Tambaram, Porur, OMR, Sholinganallur and many more nearby localities.`}
               </p>
               <p className="mt-6 rounded-[1.75rem] border border-[#db200e]/10 bg-white p-5 text-sm leading-7 text-[#201815]/70 shadow-[0_20px_60px_rgba(32,24,21,0.08)]">
                 {locationSummary}
@@ -601,20 +672,17 @@ export default async function LocationPage({ params }: LocationPageProps) {
           <div className="rounded-[2.5rem] border border-[#db200e]/10 bg-white p-8 shadow-[0_20px_60px_rgba(32,24,21,0.08)] sm:p-10">
             <div className="max-w-4xl" data-reveal>
               <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#db200e]">
-                Area-Wise SEO Paragraphs
+                Area-Wise Moving Support
               </p>
               <h2 className="mt-3 font-display text-3xl font-bold text-[#201815] sm:text-4xl">
-                {locationName} city paragraphs that include locality keywords
-                in a readable format.
+                Chennai locality coverage for {locationName} moves.
               </h2>
               <p className="mt-5 text-base leading-8 text-[#201815]/72">
-                Search visibility improves when city and locality keywords are
-                present inside meaningful paragraphs instead of being dumped in
-                a random list. The content below is designed for that purpose,
-                so users can read it comfortably and search engines can still
-                understand strong {locationName} relevance for packers and
-                movers, household shifting services and bike transportation
-                services.
+                Each pickup area has different moving conditions, from
+                apartment towers and gated communities to busy streets and
+                suburban routes. Customers can request packing, loading,
+                household shifting, bike transportation and car carrier support
+                based on their pickup area, destination and item volume.
               </p>
             </div>
 
@@ -678,8 +746,8 @@ export default async function LocationPage({ params }: LocationPageProps) {
                   Need an urgent moving conversation?
                 </h3>
                 <p className="mt-4 text-base leading-7 text-white/75">
-                  Call now for household shifting or bike transportation in{" "}
-                  {locationName}.
+                  Call now for household shifting, bike transportation or car
+                  carrier services for {locationName}.
                 </p>
                 <a
                   href={phoneHref}
@@ -701,6 +769,8 @@ export default async function LocationPage({ params }: LocationPageProps) {
           </div>
         </section>
 
+        <ChennaiKeywordsSection currentHref={routeKeywordHref ?? canonicalPath} />
+
         <section
           id="faq"
           className="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:px-8"
@@ -710,7 +780,7 @@ export default async function LocationPage({ params }: LocationPageProps) {
               FAQ
             </p>
             <h2 className="mt-3 font-display text-3xl font-bold text-[#201815] sm:text-4xl">
-              Common questions for packers and movers in {locationName}
+              Common questions for {packersKeyword}
             </h2>
           </div>
 
@@ -750,7 +820,7 @@ export default async function LocationPage({ params }: LocationPageProps) {
                   Final CTA
                 </p>
                 <h2 className="mt-3 font-display text-3xl font-bold text-[#201815] sm:text-4xl">
-                  Need packers and movers in {locationName} right now?
+                  Need {packersKeyword} right now?
                 </h2>
                 <p className="mt-4 max-w-2xl text-base leading-8 text-[#201815]/70">
                   Call{" "}
@@ -758,8 +828,9 @@ export default async function LocationPage({ params }: LocationPageProps) {
                     {phoneNumber}
                   </a>{" "}
                   or send a quick enquiry for {locationName} household shifting
-                  services, bike transportation services or local packers and
-                  movers support.
+                  services, bike transportation services, car transportation
+                  services, car carrier services or local packers and movers
+                  support.
                 </p>
               </div>
 
@@ -797,6 +868,12 @@ export default async function LocationPage({ params }: LocationPageProps) {
             </a>
             <a href="#contact" className="font-semibold text-[#201815]/70">
               Contact Form
+            </a>
+            <a
+              href="#chennai-keywords"
+              className="font-semibold text-[#201815]/70"
+            >
+              Chennai Routes
             </a>
           </div>
         </div>
