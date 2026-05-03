@@ -7,6 +7,7 @@ type EnquiryFormProps = {
     areas: readonly string[];
     phoneHref: string;
     phoneNumber: string;
+    locationName?: string;
 };
 
 type FormState = {
@@ -33,7 +34,7 @@ const initialState: FormState = {
     website: ""
 };
 
-export function EnquiryForm({ areas, phoneHref, phoneNumber }: EnquiryFormProps) {
+export function EnquiryForm({ areas, phoneHref, phoneNumber, locationName = "Chennai" }: EnquiryFormProps) {
     const [form, setForm] = useState<FormState>(initialState);
     const [status, setStatus] = useState<{ tone: "neutral" | "success" | "error"; message: string }>({
         tone: "neutral",
@@ -110,7 +111,7 @@ export function EnquiryForm({ areas, phoneHref, phoneNumber }: EnquiryFormProps)
             <div className="flex items-start justify-between gap-4">
                 <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#db200e]">Quick Enquiry</p>
-                    <h2 className="mt-3 font-display text-3xl font-bold text-[#201815]">Request your Chennai moving callback</h2>
+                    <h2 className="mt-3 font-display text-3xl font-bold text-[#201815]">Request your {locationName} moving callback</h2>
                 </div>
                 <div className="hidden rounded-2xl bg-[#fcca0d]/35 p-3 text-[#db200e] sm:block">
                     <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -122,7 +123,7 @@ export function EnquiryForm({ areas, phoneHref, phoneNumber }: EnquiryFormProps)
             </div>
 
             <p className="mt-4 text-sm leading-7 text-[#201815]/70">
-                Share your move details and we will review the enquiry for packing, shifting or bike transport support in Chennai.
+                Share your move details and we will review the enquiry for packing, shifting or bike transport support in {locationName}.
             </p>
 
             <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
@@ -184,7 +185,7 @@ export function EnquiryForm({ areas, phoneHref, phoneNumber }: EnquiryFormProps)
                             type="text"
                             list="chennai-areas"
                             className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-[#201815] outline-none transition focus:border-[#db200e] focus:ring-4 focus:ring-[#db200e]/10"
-                            placeholder="Example: Anna Nagar"
+                            placeholder={`Example: ${locationName}`}
                             required
                             value={form.movingFrom}
                             onChange={(event) => updateField("movingFrom", event.target.value)}
@@ -268,7 +269,7 @@ export function EnquiryForm({ areas, phoneHref, phoneNumber }: EnquiryFormProps)
                 </div>
                 <div>
                     <p className="font-semibold text-white">Best For</p>
-                    <p className="mt-2 leading-6">Local Chennai moves, household shifting and bike transport enquiries.</p>
+                    <p className="mt-2 leading-6">Local {locationName} moves, household shifting and bike transport enquiries.</p>
                 </div>
             </div>
 

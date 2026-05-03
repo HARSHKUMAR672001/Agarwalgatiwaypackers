@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 
 import { EnquiryForm } from "@/components/enquiry-form";
 import { SiteHeader } from "@/components/site-header";
@@ -7,6 +9,7 @@ import {
   chennaiAreas,
   faqs,
   featureCards,
+  getAreaFromLocationSlug,
   locationPages,
   longFormBlocks,
   phoneHref,
@@ -15,30 +18,16 @@ import {
   seoHighlights,
   services,
   trustPoints,
-  whatsappHelpHref,
-  whatsappHref,
 } from "@/lib/site-content";
 
-const movingCompanyJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "MovingCompany",
-  name: "Agarwal Gatiway Packers and Movers",
-  description:
-    "Packers and movers in Chennai offering household shifting services, bike transportation services, packing and relocation support.",
-  telephone: "+91-9991973464",
-  areaServed: {
-    "@type": "City",
-    name: "Chennai",
-  },
-  serviceType: [
-    "Packers and Movers",
-    "Household Shifting Services",
-    "Bike Transportation Services",
-    "Loading and Unloading",
-    "Local and Intercity Relocation",
-  ],
-  image: "/images/logo.png",
+type LocationPageProps = {
+  params: Promise<{
+    locationSlug: string;
+  }>;
 };
+
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://agarwalgatiwaypackers.com";
 
 const topTrustCards = [
   {
@@ -53,11 +42,173 @@ const topTrustCards = [
   },
 ] as const;
 
-const locationSummary = `Agarwal Gatiway Packers and Movers supports packers and movers in Chennai, household shifting services in Chennai and bike transportation services across ${chennaiAreas
-  .slice(0, 12)
-  .join(", ")} and many more localities.`;
+export const dynamicParams = false;
 
-export default function HomePage() {
+export function generateStaticParams() {
+  return locationPages.map((page) => ({
+    locationSlug: page.slug,
+  }));
+}
+
+export async function generateMetadata({
+  params,
+}: LocationPageProps): Promise<Metadata> {
+  const { locationSlug } = await params;
+  const locationName = getAreaFromLocationSlug(locationSlug);
+
+  if (!locationName) {
+    return {
+      title: "Location Not Found",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const canonicalPath = `/${locationSlug}`;
+  const title = `Agarwal Packers And Movers ${locationName} | Household Shifting & Bike Transportation`;
+  const description = `Agarwal Gatiway offers packers and movers in ${locationName} with household shifting services, bike transportation services, packing, loading and relocation support. Call ${phoneNumber}.`;
+
+  return {
+    metadataBase: new URL(siteUrl),
+    title,
+    description,
+    keywords: [
+      "Agarwal Packers And Movers",
+      "packers and movers",
+      "Household shifting Services",
+      "Bike Transportation services",
+      `Agarwal Packers And Movers ${locationName}`,
+      `packers and movers ${locationName}`,
+      `packers and movers in ${locationName}`,
+      `household shifting ${locationName}`,
+      `household shifting services in ${locationName}`,
+      `bike transportation ${locationName}`,
+      `bike transportation services in ${locationName}`,
+    ],
+    robots: {
+      index: true,
+      follow: true,
+    },
+    alternates: {
+      canonical: canonicalPath,
+    },
+    openGraph: {
+      type: "website",
+      locale: "en_IN",
+      title,
+      description,
+      url: canonicalPath,
+      images: [
+        {
+          url: "/images/logo.png",
+          alt: "Agarwal Gatiway Packers and Movers logo",
+        },
+      ],
+    },
+  };
+}
+
+export default async function LocationPage({ params }: LocationPageProps) {
+  const { locationSlug } = await params;
+  const locationName = getAreaFromLocationSlug(locationSlug);
+
+  if (!locationName) {
+    notFound();
+  }
+
+  const canonicalPath = `/${locationSlug}`;
+  const whatsappHref = `https://wa.me/919991973464?text=${encodeURIComponent(
+    `Hello Agarwal Gatiway, I need a quote for my move in ${locationName}.`
+  )}`;
+  const whatsappHelpHref = `https://wa.me/919991973464?text=${encodeURIComponent(
+    `Hello Agarwal Gatiway, I need help with packers and movers in ${locationName}.`
+  )}`;
+
+  const localizedFeatureCards = featureCards.map((card) => ({
+    title: localizeText(card.title, locationName),
+    description: localizeText(card.description, locationName),
+  }));
+  const localizedSeoHighlights = seoHighlights.map((highlight) => ({
+    title: localizeText(highlight.title, locationName),
+    description: localizeText(highlight.description, locationName),
+  }));
+  const localizedServices = services.map((service) => ({
+    title: localizeText(service.title, locationName),
+    description: localizeText(service.description, locationName),
+  }));
+  const localizedLongFormBlocks = longFormBlocks.map((block) => ({
+    eyebrow: localizeText(block.eyebrow, locationName),
+    title: localizeText(block.title, locationName),
+    paragraphs: block.paragraphs.map((paragraph) =>
+      localizeText(paragraph, locationName)
+    ),
+  }));
+  const localizedTrustPoints = trustPoints.map((point) => ({
+    title: localizeText(point.title, locationName),
+    description: localizeText(point.description, locationName),
+  }));
+  const localizedAreaParagraphs = areaWiseParagraphs.map((item) => ({
+    title: localizeText(item.title, locationName),
+    description: localizeText(item.description, locationName),
+  }));
+  const localizedProcessSteps = processSteps.map((step) => ({
+    title: localizeText(step.title, locationName),
+    description: localizeText(step.description, locationName),
+  }));
+  const localizedFaqs = faqs.map((faq) => ({
+    question: localizeText(faq.question, locationName),
+    answer: localizeText(faq.answer, locationName),
+  }));
+  const localizedTopTrustCards = topTrustCards.map((card) => ({
+    title: localizeText(card.title, locationName),
+    description: localizeText(card.description, locationName),
+  }));
+  const areaSuggestions = [
+    locationName,
+    ...chennaiAreas.filter((area) => area !== locationName),
+  ];
+  const locationSummary = `Agarwal Gatiway Packers and Movers supports packers and movers in ${locationName}, household shifting services in ${locationName} and bike transportation services around ${locationName} with Chennai-wide relocation support.`;
+  const movingCompanyJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MovingCompany",
+    name: "Agarwal Gatiway Packers and Movers",
+    description: `Packers and movers in ${locationName} offering household shifting services, bike transportation services, packing and relocation support.`,
+    telephone: "+91-9991973464",
+    url: `${siteUrl}${canonicalPath}`,
+    areaServed: {
+      "@type": "Place",
+      name: locationName,
+    },
+    serviceType: [
+      "Packers and Movers",
+      "Household Shifting Services",
+      "Bike Transportation Services",
+      "Loading and Unloading",
+      "Local and Intercity Relocation",
+    ],
+    image: `${siteUrl}/images/logo.png`,
+  };
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: `Packers and Movers in ${locationName}`,
+        item: `${siteUrl}${canonicalPath}`,
+      },
+    ],
+  };
+
   return (
     <>
       <script
@@ -66,13 +217,19 @@ export default function HomePage() {
           __html: JSON.stringify(movingCompanyJsonLd),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd),
+        }}
+      />
 
       <div className="grain pointer-events-none fixed inset-0 -z-10 opacity-50" />
 
       <div className="border-b border-white/10 bg-[#db200e] text-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
           <p className="font-semibold">
-            Agarwal Gatiway Packers &amp; Movers in Chennai
+            Agarwal Gatiway Packers &amp; Movers in {locationName}
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <span className="rounded-full bg-white/12 px-4 py-2 font-medium">
@@ -88,7 +245,11 @@ export default function HomePage() {
         </div>
       </div>
 
-      <SiteHeader phoneHref={phoneHref} phoneNumber={phoneNumber} />
+      <SiteHeader
+        phoneHref={phoneHref}
+        phoneNumber={phoneNumber}
+        locationsLabel={`${locationName} Areas`}
+      />
 
       <main id="top">
         <section className="relative overflow-hidden">
@@ -100,21 +261,21 @@ export default function HomePage() {
               <div data-reveal>
                 <span className="inline-flex items-center gap-2 rounded-full border border-[#db200e]/10 bg-white/80 px-4 py-2 text-sm font-semibold text-[#db200e] shadow-[0_20px_60px_rgba(32,24,21,0.08)]">
                   <span className="h-2.5 w-2.5 rounded-full bg-[#fcca0d]" />
-                  Chennai local and intercity relocation support
+                  {locationName} local and intercity relocation support
                 </span>
 
                 <h1 className="mt-6 max-w-4xl font-display text-4xl font-extrabold leading-tight text-[#201815] sm:text-5xl lg:text-6xl">
-                  Agarwal Packers And Movers in Chennai for safe household
-                  shifting and bike transportation services.
+                  Agarwal Packers And Movers in {locationName} for safe
+                  household shifting and bike transportation services.
                 </h1>
 
                 <p className="mt-6 max-w-2xl text-lg leading-8 text-[#201815]/75">
                   Agarwal Gatiway helps families, tenants and businesses move
-                  across Chennai with careful packing, organized loading,
+                  across {locationName} with careful packing, organized loading,
                   on-time pickup and responsive support. If someone searches for
-                  packers and movers in Chennai, household shifting services or
-                  bike transportation services, this page is built to answer
-                  that need clearly.
+                  packers and movers in {locationName}, household shifting
+                  services or bike transportation services, this page is built
+                  to answer that need clearly.
                 </p>
 
                 <div className="mt-8 flex flex-wrap gap-4">
@@ -142,7 +303,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="mt-10 grid gap-4 sm:grid-cols-2">
-                  {featureCards.map((card) => (
+                  {localizedFeatureCards.map((card) => (
                     <div
                       key={card.title}
                       className="rounded-3xl border border-[#db200e]/10 bg-white/80 p-5 shadow-[0_20px_60px_rgba(32,24,21,0.08)]"
@@ -169,15 +330,18 @@ export default function HomePage() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#db200e]">
-                      Popular Chennai search intent
+                      Popular {locationName} search intent
                     </p>
                     <p className="mt-2 text-base leading-7 text-[#201815]/75">
                       This landing page targets searches for{" "}
-                      <strong>Agarwal Packers And Movers Chennai</strong>,{" "}
-                      <strong>packers and movers Chennai</strong>,{" "}
+                      <strong>
+                        Agarwal Packers And Movers {locationName}
+                      </strong>
+                      ,{" "}
+                      <strong>packers and movers {locationName}</strong>,{" "}
                       <strong>household shifting services</strong> and{" "}
                       <strong>bike transportation services</strong> with
-                      location-specific content for Chennai neighborhoods.
+                      location-specific content for {locationName} customers.
                     </p>
                   </div>
                 </div>
@@ -185,9 +349,10 @@ export default function HomePage() {
 
               <div className="lg:justify-self-end" data-reveal>
                 <EnquiryForm
-                  areas={chennaiAreas}
+                  areas={areaSuggestions}
                   phoneHref={phoneHref}
                   phoneNumber={phoneNumber}
+                  locationName={locationName}
                 />
               </div>
             </div>
@@ -196,7 +361,7 @@ export default function HomePage() {
 
         <section className="mx-auto max-w-7xl px-4 pb-6 sm:px-6 lg:px-8">
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {seoHighlights.map((highlight) => (
+            {localizedSeoHighlights.map((highlight) => (
               <article
                 key={highlight.title}
                 className="rounded-[1.75rem] border border-[#db200e]/10 bg-white p-6 shadow-[0_20px_60px_rgba(32,24,21,0.08)]"
@@ -223,8 +388,8 @@ export default function HomePage() {
                 Our Services
               </p>
               <h2 className="mt-3 max-w-3xl font-display text-3xl font-bold text-[#201815] sm:text-4xl">
-                Packers and movers services designed for Chennai homes, offices
-                and vehicle shifts.
+                Packers and movers services designed for {locationName} homes,
+                offices and vehicle shifts.
               </h2>
             </div>
             <p
@@ -233,13 +398,13 @@ export default function HomePage() {
             >
               The page is focused on the services people typically look for
               first: packers and movers, household shifting services and bike
-              transportation services from Chennai localities to city or
+              transportation services from {locationName} localities to city or
               outstation destinations.
             </p>
           </div>
 
           <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {services.map((service, index) => (
+            {localizedServices.map((service, index) => (
               <article
                 key={service.title}
                 className="rounded-[2rem] border border-[#db200e]/10 bg-white p-6 shadow-[0_20px_60px_rgba(32,24,21,0.08)]"
@@ -264,25 +429,26 @@ export default function HomePage() {
         <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
           <div className="max-w-4xl" data-reveal>
             <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#db200e]">
-              Detailed Chennai Content
+              Detailed {locationName} Content
             </p>
             <h2 className="mt-3 font-display text-3xl font-bold text-[#201815] sm:text-4xl">
-              Readable SEO content for packers and movers in Chennai, household
-              shifting services and bike transportation services.
+              Readable SEO content for packers and movers in {locationName},
+              household shifting services and bike transportation services.
             </h2>
             <p className="mt-5 text-lg leading-8 text-[#201815]/72">
               A strong landing page should not only show service cards and
               contact buttons. It should also explain what customers actually
-              need when they search for Agarwal Packers And Movers Chennai,
-              packers and movers Chennai, household shifting services in Chennai
-              or bike transportation services in Chennai. The content below is
-              written to be readable for visitors while naturally covering the
-              service terms and locality intent that matter for local SEO.
+              need when they search for Agarwal Packers And Movers{" "}
+              {locationName}, packers and movers {locationName}, household
+              shifting services in {locationName} or bike transportation
+              services in {locationName}. The content below is written to be
+              readable for visitors while naturally covering the service terms
+              and locality intent that matter for local SEO.
             </p>
           </div>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
-            {longFormBlocks.map((block) => (
+            {localizedLongFormBlocks.map((block) => (
               <article
                 key={block.title}
                 className="rounded-[2rem] border border-[#db200e]/10 bg-white p-7 shadow-[0_20px_60px_rgba(32,24,21,0.08)]"
@@ -312,7 +478,7 @@ export default function HomePage() {
             <div className="grid gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
               <div data-reveal>
                 <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#fcca0d]">
-                  Why Chennai families choose us
+                  Why {locationName} families choose us
                 </p>
                 <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
                   A local SEO landing page still needs strong trust cues, not
@@ -320,13 +486,13 @@ export default function HomePage() {
                 </h2>
                 <p className="mt-6 max-w-xl text-base leading-8 text-white/75">
                   This design combines conversion-focused messaging with clear
-                  service explanations, local Chennai area targeting and direct
-                  contact paths so visitors can act immediately instead of
-                  searching for more information elsewhere.
+                  service explanations, local {locationName} area targeting and
+                  direct contact paths so visitors can act immediately instead
+                  of searching for more information elsewhere.
                 </p>
 
                 <div className="mt-8 space-y-4">
-                  {topTrustCards.map((card) => (
+                  {localizedTopTrustCards.map((card) => (
                     <div
                       key={card.title}
                       className="rounded-[1.75rem] border border-white/10 bg-white/5 p-5"
@@ -343,7 +509,7 @@ export default function HomePage() {
               </div>
 
               <div className="grid gap-5 sm:grid-cols-2">
-                {trustPoints.map((point, index) => (
+                {localizedTrustPoints.map((point, index) => (
                   <article
                     key={point.title}
                     className="rounded-[1.9rem] border border-white/10 bg-white/5 p-6"
@@ -372,16 +538,17 @@ export default function HomePage() {
           <div className="grid gap-8 lg:grid-cols-[330px_minmax(0,1fr)]">
             <div data-reveal>
               <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#db200e]">
-                Chennai Service Areas
+                {locationName} Service Area
               </p>
               <h2 className="mt-3 font-display text-3xl font-bold text-[#201815] sm:text-4xl">
-                Packers and movers coverage across major Chennai localities.
+                Packers and movers coverage for {locationName} and nearby
+                Chennai localities.
               </h2>
               <p className="mt-5 text-base leading-8 text-[#201815]/70">
-                The main target is Chennai, and the page also supports local
-                searches for neighborhoods like Anna Nagar, Adyar, Velachery,
-                Tambaram, Porur, OMR, Sholinganallur and many more nearby
-                localities.
+                This page is focused on {locationName}, and the same service
+                structure is available across major Chennai neighborhoods like
+                Anna Nagar, Adyar, Velachery, Tambaram, Porur, OMR,
+                Sholinganallur and many more nearby localities.
               </p>
               <p className="mt-6 rounded-[1.75rem] border border-[#db200e]/10 bg-white p-5 text-sm leading-7 text-[#201815]/70 shadow-[0_20px_60px_rgba(32,24,21,0.08)]">
                 {locationSummary}
@@ -390,7 +557,7 @@ export default function HomePage() {
                 href="#contact"
                 className="mt-6 inline-flex items-center justify-center rounded-full bg-[#db200e] px-6 py-4 text-sm font-bold text-white transition hover:bg-[#201815]"
               >
-                Enquire for Your Area
+                Enquire for {locationName}
               </a>
             </div>
 
@@ -404,7 +571,7 @@ export default function HomePage() {
                     Coverage List
                   </p>
                   <h3 className="mt-2 font-display text-2xl font-bold text-[#201815]">
-                    Locations covered under Chennai
+                    Location pages covered under Chennai
                   </h3>
                 </div>
                 <span className="inline-flex w-fit rounded-full bg-[#fcca0d]/35 px-4 py-2 text-sm font-bold text-[#201815]">
@@ -417,7 +584,10 @@ export default function HomePage() {
                   <a
                     key={page.slug}
                     href={page.href}
-                    className="area-chip transition hover:border-[#db200e]/35 hover:bg-[#db200e]/10"
+                    className={`area-chip transition hover:border-[#db200e]/35 hover:bg-[#db200e]/10 ${
+                      page.area === locationName ? "bg-[#fcca0d]/45" : ""
+                    }`}
+                    aria-current={page.area === locationName ? "page" : undefined}
                   >
                     {page.area}
                   </a>
@@ -434,21 +604,22 @@ export default function HomePage() {
                 Area-Wise SEO Paragraphs
               </p>
               <h2 className="mt-3 font-display text-3xl font-bold text-[#201815] sm:text-4xl">
-                Chennai city paragraphs that include locality keywords in a
-                readable format.
+                {locationName} city paragraphs that include locality keywords
+                in a readable format.
               </h2>
               <p className="mt-5 text-base leading-8 text-[#201815]/72">
                 Search visibility improves when city and locality keywords are
                 present inside meaningful paragraphs instead of being dumped in
                 a random list. The content below is designed for that purpose,
                 so users can read it comfortably and search engines can still
-                understand strong Chennai relevance for packers and movers,
-                household shifting services and bike transportation services.
+                understand strong {locationName} relevance for packers and
+                movers, household shifting services and bike transportation
+                services.
               </p>
             </div>
 
             <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {areaWiseParagraphs.map((item) => (
+              {localizedAreaParagraphs.map((item) => (
                 <article
                   key={item.title}
                   className="rounded-[2rem] border border-[#db200e]/10 bg-[#fff8ef] p-6"
@@ -477,7 +648,7 @@ export default function HomePage() {
                   How your move gets planned with us
                 </h2>
                 <div className="mt-8 grid gap-5 md:grid-cols-2">
-                  {processSteps.map((step, index) => (
+                  {localizedProcessSteps.map((step, index) => (
                     <article
                       key={step.title}
                       className="rounded-[1.8rem] border border-white/10 bg-white/5 p-6"
@@ -507,8 +678,8 @@ export default function HomePage() {
                   Need an urgent moving conversation?
                 </h3>
                 <p className="mt-4 text-base leading-7 text-white/75">
-                  Call now for household shifting or bike transportation in
-                  Chennai.
+                  Call now for household shifting or bike transportation in{" "}
+                  {locationName}.
                 </p>
                 <a
                   href={phoneHref}
@@ -539,12 +710,12 @@ export default function HomePage() {
               FAQ
             </p>
             <h2 className="mt-3 font-display text-3xl font-bold text-[#201815] sm:text-4xl">
-              Common questions for packers and movers in Chennai
+              Common questions for packers and movers in {locationName}
             </h2>
           </div>
 
           <div className="mt-10 space-y-4">
-            {faqs.map((faq) => (
+            {localizedFaqs.map((faq) => (
               <details
                 key={faq.question}
                 className="rounded-[1.75rem] border border-[#db200e]/10 bg-white p-6 shadow-[0_20px_60px_rgba(32,24,21,0.08)]"
@@ -579,14 +750,14 @@ export default function HomePage() {
                   Final CTA
                 </p>
                 <h2 className="mt-3 font-display text-3xl font-bold text-[#201815] sm:text-4xl">
-                  Need packers and movers in Chennai right now?
+                  Need packers and movers in {locationName} right now?
                 </h2>
                 <p className="mt-4 max-w-2xl text-base leading-8 text-[#201815]/70">
                   Call{" "}
                   <a href={phoneHref} className="font-bold text-[#db200e]">
                     {phoneNumber}
                   </a>{" "}
-                  or send a quick enquiry for Chennai household shifting
+                  or send a quick enquiry for {locationName} household shifting
                   services, bike transportation services or local packers and
                   movers support.
                 </p>
@@ -612,7 +783,6 @@ export default function HomePage() {
       </main>
 
       <footer className="border-t border-black/10 bg-white/80">
-      
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-[#201815]/65 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <p>
             &copy; {new Date().getFullYear()} Agarwal Gatiway All rights
@@ -623,7 +793,7 @@ export default function HomePage() {
               {phoneNumber}
             </a>
             <a href="#locations" className="font-semibold text-[#201815]/70">
-              Chennai Service Areas
+              {locationName} Service Areas
             </a>
             <a href="#contact" className="font-semibold text-[#201815]/70">
               Contact Form
@@ -631,14 +801,14 @@ export default function HomePage() {
           </div>
         </div>
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 text-sm font-bold text-[#201815]/65 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-                <span className="inline-flex  text-sm font-bold text-[#201815]/65 text-center">
-          Disclaimer: Agarwal Gatiway packers and movers is in independent and
-          trustworthy relocation Company in India. we do not accept or claim Our
-          any partnership or any other relationship With "Agarwal Packers and
-          Movers LTD" DSR Group. "Agarwal packers and movers" any of the other
-          companies and business
-        </span>
-      </div>
+          <span className="inline-flex text-center text-sm font-bold text-[#201815]/65">
+            Disclaimer: Agarwal Gatiway packers and movers is in independent and
+            trustworthy relocation Company in India. we do not accept or claim
+            Our any partnership or any other relationship With "Agarwal Packers
+            and Movers LTD" DSR Group. "Agarwal packers and movers" any of the
+            other companies and business
+          </span>
+        </div>
       </footer>
 
       <div className="fixed inset-x-4 bottom-4 z-50 md:hidden">
@@ -669,6 +839,10 @@ export default function HomePage() {
       </a>
     </>
   );
+}
+
+function localizeText(text: string, locationName: string) {
+  return text.replaceAll("Chennai", locationName);
 }
 
 function ServiceIcon({ index }: { index: number }) {

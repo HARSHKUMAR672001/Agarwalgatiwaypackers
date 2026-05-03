@@ -6,16 +6,21 @@ import { useState } from "react";
 type SiteHeaderProps = {
     phoneHref: string;
     phoneNumber: string;
+    locationsLabel?: string;
 };
 
-const navLinks = [
+const baseNavLinks = [
     { href: "#services", label: "Services" },
-    { href: "#locations", label: "Chennai Areas" },
     { href: "#faq", label: "FAQ" }
 ] as const;
 
-export function SiteHeader({ phoneHref, phoneNumber }: SiteHeaderProps) {
+export function SiteHeader({ phoneHref, phoneNumber, locationsLabel = "Chennai Areas" }: SiteHeaderProps) {
     const [isOpen, setIsOpen] = useState(false);
+    const navLinks = [
+        baseNavLinks[0],
+        { href: "#locations", label: locationsLabel },
+        baseNavLinks[1]
+    ] as const;
 
     return (
         <>

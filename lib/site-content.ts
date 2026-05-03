@@ -69,6 +69,34 @@ export const chennaiAreas = [
     "Iyyappanthangal"
 ] as const;
 
+export type ChennaiArea = (typeof chennaiAreas)[number];
+
+export function slugifyLocation(location: string) {
+    return location
+        .toLowerCase()
+        .replace(/&/g, " and ")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
+export function getLocationPageSlug(location: string) {
+    return `packers-and-movers-in-${slugifyLocation(location)}`;
+}
+
+export const locationPages = chennaiAreas.map((area) => ({
+    area,
+    slug: getLocationPageSlug(area),
+    href: `/${getLocationPageSlug(area)}`
+})) as readonly {
+    area: ChennaiArea;
+    slug: string;
+    href: string;
+}[];
+
+export function getAreaFromLocationSlug(slug: string) {
+    return locationPages.find((page) => page.slug === slug)?.area;
+}
+
 export const featureCards = [
     {
         title: "Household shifting",
